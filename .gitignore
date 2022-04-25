@@ -1,0 +1,7 @@
+.env
+pyvenv.cfg
+src/database.ini
+
+/.secrets
+/src/__pycache__/
+
