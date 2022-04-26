@@ -92,7 +92,7 @@ class Route():
             try:
                 return route()
             except Exception as error:
-                if len(error.args==3):
+                if len(error.args) == 3:
                     return error.args
                 print(error)
                 return INTERNAL_ERROR,False,500
