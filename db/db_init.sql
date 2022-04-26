@@ -72,7 +72,7 @@ CREATE TABLE entity_instances (
     created TIMESTAMP DEFAULT NOW(),
     modified TIMESTAMP DEFAULT NOW(),
 
-    UNIQUE(creator,name,type),
+    UNIQUE(creator,name),
 
     CONSTRAINT fk_creator
       FOREIGN KEY(creator) 
