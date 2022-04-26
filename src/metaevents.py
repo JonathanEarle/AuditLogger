@@ -46,7 +46,7 @@ class EntityType(Event):
 
         event_details = {'event_type':'edit_entity_events','entity_type':self.ENTITY_TYPE_NAME,'success':False,'invalid_adds':0,'to_add':to_add,'to_remove':to_remove,'entity_name':self.ENTITY_INSTANCE_NAME}
 
-        if not (isinstance(to_add,list) or isinstance(to_add,list)):
+        if not (isinstance(to_add,list) and isinstance(to_remove,list)):
             mssg = "Events must be in a comma separated list"
             self.add(update(event_details,{'notes':mssg}))
             raise Exception(mssg,False,400)
@@ -176,7 +176,7 @@ class EventType(Event):
 
         event_details = {'event_type':'edit_event_type_attributes','entity_type':self.ENTITY_TYPE_NAME,'success':False,'to_add':to_add,'to_remove':to_remove,'entity_name':self.ENTITY_INSTANCE_NAME}
 
-        if not (isinstance(to_add,list) or isinstance(to_add,list)):
+        if not (isinstance(to_add,list) and isinstance(to_remove,list)):
             mssg = "Attributes must be in a comma separated list"
             self.add(update(event_details,{'notes':mssg}))
             raise Exception(mssg,False,400)
