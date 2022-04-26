@@ -56,7 +56,7 @@ class EntityType(Event):
             cur.execute("SELECT id FROM entity_types WHERE name = %s AND creator = %s", (entity_type_name,self._user))
             result =  cur.fetchone()
             
-            mssg = "Attempt to modify evnts of entity {0}, which does not exist".format(entity_type_name)
+            mssg = "Attempt to modify events of entity {0}, which does not exist".format(entity_type_name)
             self._validate_event_parameter(result,mssg,update(event_details,{'notes':mssg}))
             entity_id = result[0]
 
