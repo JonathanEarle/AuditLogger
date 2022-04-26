@@ -33,8 +33,6 @@ CREATE TABLE entity_types (
       FOREIGN KEY(creator) 
 	  REFERENCES users(id)
 );
-CREATE INDEX idx_entity_types_creator
-ON entity_types(creator);
 
 CREATE TABLE event_types (
     id SERIAL PRIMARY KEY,
@@ -47,8 +45,6 @@ CREATE TABLE event_types (
       FOREIGN KEY(creator) 
 	  REFERENCES users(id)
 );
-CREATE INDEX idx_event_types_creator
-ON event_types(creator);
 
 CREATE TABLE entity_events (
     entity_type INT NOT NULL,
@@ -82,8 +78,6 @@ CREATE TABLE entity_instances (
       FOREIGN KEY(type) 
 	  REFERENCES entity_types(id)
 );
-CREATE INDEX idx_entity_instances_creator
-ON entity_instances(creator);
 
 CREATE TABLE events (
     id SERIAL PRIMARY KEY,
@@ -190,7 +184,7 @@ DECLARE
 BEGIN
 	INSERT INTO entity_instances(type,name,creator)
 	VALUES(entity_id, entity_name, event_creator)
-	ON CONFLICT ON CONSTRAINT entity_instances_creator_name_type_key
+	ON CONFLICT ON CONSTRAINT entity_instances_creator_name_key
 	DO UPDATE SET modified = NOW()
 	RETURNING id INTO new_event_entity_id;
 
