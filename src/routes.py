@@ -18,7 +18,11 @@ class Route():
 
     @staticmethod
     def register(data,db_config):
-        return Authorizer.register(data,db_config)
+        try:
+            return Authorizer.register(data,db_config)
+        except Exception as error:
+            print(error)
+            return "Error occurred while registering",False,500
 
     def ensure_basic(self):
         if self._type != 'Basic':
