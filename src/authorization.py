@@ -101,7 +101,7 @@ class Authorizer:
 
 
     def generate_token(self, data):
-        name = data.get('name')
+        name = data.get('name') or ''
         token = secrets.token_urlsafe()
 
         salt = os.getenv('TOKEN_SALT')
