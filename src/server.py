@@ -11,26 +11,26 @@ from utils import config
 
 class AuditServerHandler(BaseHTTPRequestHandler):
     _post_endpoints = {
-    r'\/registration': 'register',
-    r'\/v1\/entity': 'post_entity_type',
-    r'\/v1\/event_type': 'post_event_type',
-    r'\/v1\/event_type\/[^\/]+': 'post_event_type_attributes',
-    r'\/v1\/entity\/[^\/]+': 'post_entity_type_events',
-    r'\/v1\/events': 'post_event'
+    r'registration': 'register',
+    r'v1\/entity': 'post_entity_type',
+    r'v1\/event_type': 'post_event_type',
+    r'v1\/event_type\/[^\/]+': 'post_event_type_attributes',
+    r'v1\/entity\/[^\/]+': 'post_entity_type_events',
+    r'v1\/events': 'post_event'
     }
 
     _get_endpoints =  {
-    r'\/new_token': 'get_token',
-    r'\/v1\/entity': 'get_entity_types',
-    r'\/v1\/entity\/[^\/]+': 'get_entity_types',
-    r'\/v1\/event_type': 'get_event_types',
-    r'\/v1\/event_type\/[^\/]+': 'get_event_types',
-    r'\/v1\/entities': 'get_entities',
-    r'\/v1\/events\/[^\/]+': 'get_events',
-    r'\/v1\/events': 'get_events'
+    r'new_token': 'get_token',
+    r'v1\/entity': 'get_entity_types',
+    r'v1\/entity\/[^\/]+': 'get_entity_types',
+    r'v1\/event_type': 'get_event_types',
+    r'v1\/event_type\/[^\/]+': 'get_event_types',
+    r'v1\/entities': 'get_entities',
+    r'v1\/events\/[^\/]+': 'get_events',
+    r'v1\/events': 'get_events'
     }
 
-    _data = None
+    _data = {}
     _response = {}
 
     def do_HEAD(self):
@@ -66,18 +66,24 @@ class AuditServerHandler(BaseHTTPRequestHandler):
         content_length = self.headers.get('Content-Length')
         length = int(content_length) if content_length else 0
         data_string=self.rfile.read(length)
-        self._data = json.loads(data_string) if data_string else None
+
+        try:
+            self._data = json.loads(data_string)
+        except ValueError as error:
+            return
 
 
     def __navigate_endpoint_auth(self,endpoints):
-        if self.path == '/registration':
+        self.path=self.path.strip('/')
+
+        if self.path == 'registration':
             result,success,code=Route.register(self._data,self.server._db_config)
             self._set_response(result,success,code)
             return
 
         if self.headers.get('Authorization') is None:
             self.send_response(401)
-            if self.path == '/new_token':
+            if self.path == 'new_token':
                 self.send_header('WWW-Authenticate', 'Basic realm = "Add token realm"')
             else:
                 self.send_header('WWW-Authenticate', 'Bearer')
@@ -102,7 +108,7 @@ class AuditServerHandler(BaseHTTPRequestHandler):
             return
     
         targets = self.path.split('/')
-        url_params = [targets[i] for i in range(3,len(targets),2)] if len(targets)>3 else []
+        url_params = [targets[i] for i in range(2,len(targets),2)] if len(targets)>2 else []
 
         route_manager = Route(auth_manager,self._data,self.server._db_config,url_params)
         result,success,code = route_manager.resolve(endpoints[matched_endpoint[0]])
