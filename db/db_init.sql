@@ -129,7 +129,7 @@ BEGIN
 		VALUES 
 			(user_id,'create_entity', ARRAY ['name']),
 			(user_id,'create_event_type', ARRAY ['name']),
-			(user_id,'edit_entity_events', ARRAY ['to_add', 'to_remove', 'invalid_to_adds']),
+			(user_id,'edit_entity_events', ARRAY ['to_add', 'to_remove', 'invalid_to_adds', 'removed']),
 			(user_id,'edit_event_type_attributes', ARRAY ['to_add', 'to_remove'])
 		RETURNING id
 	)

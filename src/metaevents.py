@@ -41,7 +41,8 @@ class EntityType(Event):
     def edit_entity_events(self, entity_type_name, data):  
         to_add = data.get('to_add') or []
         to_remove = data.get('to_remove') or []
-        invalid_adds = 0
+        invalid_events = []
+        invalid_adds = removed = 0
 
         event_details = {'event_type':'edit_entity_events','entity_type':self.ENTITY_TYPE_NAME,'success':False,'invalid_adds':0,'to_add':to_add,'to_remove':to_remove,'entity_name':self.ENTITY_INSTANCE_NAME}
 
@@ -69,7 +70,8 @@ class EntityType(Event):
 
                 if result is None:
                     invalid_adds+=1
-                    self.add(update(event_details,{'notes':"Invalid Add Attempt",'invalid_adds':invalid_adds}))
+                    invalid_events.append(event_name)
+                    self.add(update(event_details,{'invalid_adds':invalid_adds}))
                 else:
                     query_params.extend([entity_id,result[0]])
                     query += "(%s,%s),"
@@ -85,9 +87,10 @@ class EntityType(Event):
                 query += " (name = %s AND creator = %s) OR"
                 query_params.extend(event_name,self._user)
 
-            if len(query_params) > 1: 
-                query = query[:-2]+')'
+            if len(query_params) > 1:
+                query = query[:-2]+') RETURNING *'
                 cur.execute(query,tuple(query_params))
+                removed = cur.rowcount
 
             conn.commit()
             disconnect(conn,cur)
@@ -98,7 +101,7 @@ class EntityType(Event):
         finally:
             if conn is not None: conn.close()
 
-        return self.add(update(event_details,{'notes':"Entity Events Edited","success":True}))
+        return self.add(update(event_details,{'notes':"Entity Events Edited","success":True,'invalid_events':invalid_events,'removed':removed}))
 
 
     def view_entity_types(self, entity_type_name=None):
