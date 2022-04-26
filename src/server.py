@@ -90,7 +90,12 @@ class AuditServerHandler(BaseHTTPRequestHandler):
             self._set_response('No auth header received',False,401)
             return
 
-        auth_type,auth_key=self.headers.get('Authorization').split()
+        try:
+            auth_type,auth_key=self.headers.get('Authorization').split()
+        except ValueError as error:
+            self._set_response('Malformed auth header received',False,401)
+            return
+
         auth_manager=Authorizer(auth_type,auth_key,self.server._db_config)
 
         if(not auth_manager.authorized):
