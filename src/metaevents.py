@@ -35,16 +35,16 @@ class EntityType(Event):
         finally:
             if conn is not None: conn.close()
 
-        return self.add(update(event_details,{'notes':"Entity Added",'success':True}))
+        return self.add(update(event_details,{'name':name,'notes':"Entity Added",'success':True}))
            
 
-    def edit_entity_events(self, entity_type_name, data):  
+    def edit_entity_events(self, entity_type_name, data):
         to_add = data.get('to_add') or []
         to_remove = data.get('to_remove') or []
         invalid_events = []
         invalid_adds = removed = 0
 
-        event_details = {'event_type':'edit_entity_events','entity_type':self.ENTITY_TYPE_NAME,'success':False,'invalid_adds':0,'to_add':to_add,'to_remove':to_remove,'entity_name':self.ENTITY_INSTANCE_NAME}
+        event_details = {'event_type':'edit_entity_events','entity_type':self.ENTITY_TYPE_NAME,'success':False,'invalid_adds':0,'to_add':to_add,'to_remove':to_remove,'invalid_events':[],'entity_name':self.ENTITY_INSTANCE_NAME}
 
         if not (isinstance(to_add,list) and isinstance(to_remove,list)):
             mssg = "Events must be in a comma separated list"
@@ -217,7 +217,7 @@ class EventType(Event):
         finally:
             if conn is not None: conn.close()
 
-        return self.add(update(event_details,{'notes':"Attributes Added",'success':True}))
+        return self.add(update(event_details,{'to_add':to_add,'to_remove':to_remove,'notes':"Attributes Added",'success':True}))
         
 
     def view_event_types(self, event_name=None):
