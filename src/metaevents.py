@@ -108,9 +108,11 @@ class EntityType(Event):
         entities=[]
         count=0
         
-        query = """SELECT entity_types.name,array_agg(DISTINCT events.name) as entity_events FROM entity_types ,
-                (SELECT entity_events.entity_type ,name FROM event_types INNER JOIN entity_events ON entity_events.event_type=event_types.id)
-                 AS events WHERE entity_types.creator = %s"""
+        query = """SELECT entity_types.name,
+                array_agg(DISTINCT(SELECT name FROM event_types WHERE id = entity_events.event_type))
+                FROM entity_types
+                INNER JOIN entity_events ON entity_events.entity_type = entity_types.id
+                WHERE entity_types.creator = %s"""
         params = [self._user]
 
         if entity_type_name:
