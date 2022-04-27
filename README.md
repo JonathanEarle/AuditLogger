@@ -30,7 +30,7 @@ Make deployment script executable
   chmod +x deploy.sh
 ```
 
-Run the deployment script
+Run the deployment script. Enter a password for the database when prompted, this is a postgres database used to store the service's data.
 
 ```bash
   ./deploy.sh
