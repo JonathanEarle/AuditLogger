@@ -108,22 +108,23 @@ class EntityType(Event):
         entities=[]
         count=0
         
-        query = """SELECT entity_types.name,
-                array_agg(DISTINCT(SELECT name FROM event_types WHERE id = entity_events.event_type))
-                FROM entity_types
-                INNER JOIN entity_events ON entity_events.entity_type = entity_types.id
-                WHERE entity_types.creator = %s"""
+        query = """SELECT all_entities.name, array_agg(DISTINCT (event_types.name)) AS events FROM
+                (SELECT * FROM entity_types
+                LEFT JOIN entity_events ON entity_types.id = entity_events.entity_type) AS all_entities
+                LEFT JOIN event_types ON all_entities.event_type = event_types.id
+                WHERE all_entities.creator = %s"""
         params = [self._user]
 
         if entity_type_name:
-            query+=" AND entity_types.name = %s"
+            query+=" AND all_entities.name = %s"
             params.append(entity_type_name)
-        query+=" GROUP BY entity_types.id"
+        query+=" GROUP BY all_entities.name"
 
         conn = None
         try:
             conn,cur = connect(self._db_config)
             cur.execute(query,tuple(params))
+            print(cur.query)
             count = cur.rowcount
             entities = cur.fetchall()
             disconnect(conn,cur)
