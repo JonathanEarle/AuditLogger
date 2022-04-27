@@ -100,7 +100,7 @@ class Event():
         finally:
             if conn is not None: conn.close()
 
-        labels = ['event_id','event_type_id','entity_id','created','success','rollback_id','attributes']
+        labels = ['event.id','event.type','entity_id','time','success','rb_id','attributes']
         return {'events_returned':count,'events':label_rows(labels,events)},True,200
         
 
