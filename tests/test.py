@@ -41,7 +41,7 @@ def run_test_case(test_case):
 passed_tests = num_test_cases = 0
 failed_cases = []
 
-with open(os.getcwd()+'/tests/test_cases.csv', newline='') as csvfile:
+with open(os.getcwd()+'/test_cases.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=',', quotechar="'")
     for test_case in reader:
         passed,expected,recieved = run_test_case(test_case)
