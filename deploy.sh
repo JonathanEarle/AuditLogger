@@ -16,12 +16,7 @@ database=audit_logging
 user=postgres
 password=${DB_PASSWORD}" > ./src/database.ini
 
-
-echo "Building..."
-docker-compose build --no-cache
-
 echo "Deploying..."
-docker-compose down
-docker-compose up --force-recreate --detach
+docker-compose up --build --force-recreate --detach
 
 echo "Audit Logger deployed to http://localhost:8080"
