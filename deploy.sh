@@ -16,6 +16,9 @@ database=audit_logging
 user=postgres
 password=${DB_PASSWORD}" > ./src/database.ini
 
+echo "Removing existing deployment..."
+docker-compose down
+
 echo "Deploying..."
 docker-compose up --build --force-recreate --detach
 
