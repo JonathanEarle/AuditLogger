@@ -28,7 +28,7 @@ class Event():
             cur.callproc('validate_event', (attrs['entity_type'], attrs['event_type'], self._user))
             results = cur.fetchone()
 
-            self._validate_event_parameter(results,"Invalid Name(s) Recieved")
+            self._validate_event_parameter(results,"Invalid Name(s) Received")
             entity_id,event_id = results[0],results[1]
             self._validate_event_parameter(entity_id or event_id,"Invalid Event ({0}) on Entity ({1})".format(attrs['event_type'],attrs['entity_type']))
         
