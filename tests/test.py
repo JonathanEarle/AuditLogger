@@ -2,6 +2,7 @@
 import requests
 import json
 import csv
+import sys
 import os
 
 token = ''
@@ -40,6 +41,8 @@ def run_test_case(test_case):
 
 passed_tests = num_test_cases = 0
 failed_cases = []
+
+test_file = '/'+sys.argv[1] if len(sys.argv) > 1 else '/test_cases.csv'
 
 with open(os.getcwd()+'/test_cases.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=',', quotechar="'")

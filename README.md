@@ -236,9 +236,9 @@ The key for basic authentication is the base64 encoding of `email:password`.
 ## Running initial tests
 
 To run a testing script on a newly deployed instance.
+See existing `test_cases.csv` for test file format.
 
 ```bash
-  cd audit-logger/tests
-  python3 test.py
+  python3 test.py `path_to_test_file`
 ```
 
