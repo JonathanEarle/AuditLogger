@@ -30,7 +30,7 @@ Make deployment script executable
   chmod +x deploy.sh
 ```
 
-Run the deployment script
+Run the deployment script. Enter a password for the database when prompted, this is a postgres database used to store the service's data.
 
 ```bash
   ./deploy.sh
@@ -145,7 +145,7 @@ The key for basic authentication is the base64 encoding of `email:password`.
     -X POST http://localhost:8080/v1/event_type/open_register \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"to_add":"["withdrawl_amount","deposit_amount"]", "to_remove":"["register_number"]"}' 
+    -d '{"to_add":["withdrawl_amount","deposit_amount"]", "to_remove":"["register_number"]}' 
 ```
 
 | Parameter | Type     | Description                       |
@@ -162,7 +162,7 @@ The key for basic authentication is the base64 encoding of `email:password`.
     -X POST http://localhost:8080/v1/entity/employee \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"to_add":"["employee"]"}' 
+    -d '{"to_add":["open_register"]}' 
 ```
 
 | Parameter | Type     | Description                       |
@@ -179,8 +179,7 @@ The key for basic authentication is the base64 encoding of `email:password`.
     -X POST http://localhost:8080/v1/events \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"event_type":"open_register","entity_type":"employee","success":true, \
-    "withdrawl_amount":10,"entity_name":"john","notes":"Employee John Withdrew $10"}' 
+    -d '{"event_type":"open_register","entity_type":"employee","success":true,"withdrawl_amount":10,"entity_name":"john","notes":"Employee John Withdrew $10"}' 
 ```
 
 | Parameter | Type     | Description                       |
@@ -197,22 +196,25 @@ The key for basic authentication is the base64 encoding of `email:password`.
 
 #### View all events
 
+To view all events the v1/events endpoint can be targeted.
+To view all events on a particular entity the name of that entity can be added to the target path.
+
 ```http
   curl \
-    -X GET http://localhost:8080/v1/events \
+    -X GET http://localhost:8080/v1/events/john \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"entity_type":"employee","entity_name":"john"}' 
+    -d '{"entity_id":"employee"}' 
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `authorization`      | `Bearer` | **Required**. `api_key` |
-| `event_type`      | `string` | Event type which occured |
-| `entity_type`      | `string` | Type of entity event occired on |
-| `entity_name`      | `string` | Names of entity instance |
+| `events.id`      | `int` | ID of event |
+| `events.type`      | `int` | ID of event type |
+| `entity_id`      | `int` | ID of entity type |
+| `time`      | `string` | Time event occured |
 | `success`      | `bool` | Success status of event |
-| `notes`      | `string` | Extra notes |
 | `{variate_attrs}`      | `any` | Event specific attributes |
 
 #### View all entity instances
