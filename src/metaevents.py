@@ -85,7 +85,7 @@ class EntityType(Event):
             query = "DELETE FROM entity_events WHERE entity_type = %s AND event_type IN (SELECT id FROM event_types WHERE"
             for event_name in to_remove:
                 query += " (name = %s AND creator = %s) OR"
-                query_params.extend(event_name,self._user)
+                query_params.extend([event_name,self._user])
 
             if len(query_params) > 1:
                 query = query[:-2]+') RETURNING *'
