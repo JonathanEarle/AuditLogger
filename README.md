@@ -179,8 +179,7 @@ The key for basic authentication is the base64 encoding of `email:password`.
     -X POST http://localhost:8080/v1/events \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"event_type":"open_register","entity_type":"employee","success":true, \
-    "withdrawl_amount":10,"entity_name":"john","notes":"Employee John Withdrew $10"}' 
+    -d '{"event_type":"open_register","entity_type":"employee","success":true,"withdrawl_amount":10,"entity_name":"john","notes":"Employee John Withdrew $10"}' 
 ```
 
 | Parameter | Type     | Description                       |
