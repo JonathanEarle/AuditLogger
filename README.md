@@ -162,7 +162,7 @@ The key for basic authentication is the base64 encoding of `email:password`.
     -X POST http://localhost:8080/v1/entity/employee \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer {api_key}' \
-    -d '{"to_add":"["employee"]"}' 
+    -d '{"to_add":"["open_register"]"}' 
 ```
 
 | Parameter | Type     | Description                       |
