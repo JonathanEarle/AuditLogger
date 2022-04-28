@@ -112,7 +112,7 @@ class Route():
             try:
                 return route()
             except Exception as error:
-                #TODO: Employ a sturdier undefined error catching (possibly throuh an exception handler)
+                #TODO: Employ sturdier undefined error catching (possibly throuh an exception handler)
 
                 if len(error.args) == 3: #Errors defined by the system have three components (message,success,code)
                     return error.args
