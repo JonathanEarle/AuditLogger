@@ -30,7 +30,7 @@ Make deployment script executable
   chmod +x deploy.sh
 ```
 
-Run the deployment script. Enter a password for the database when prompted, this is a postgres database used to store the service's data.
+Run the deployment script. Set a password for the database when prompted, this is a postgres database used to store the service's data.
 
 ```bash
   ./deploy.sh
@@ -241,6 +241,7 @@ To run a testing script on a newly deployed instance.
 See existing `test_cases.csv` for test file format.
 
 ```bash
+  cd tests
   python3 test.py `path_to_test_file`
 ```
 
