@@ -241,6 +241,7 @@ To run a testing script on a newly deployed instance.
 See existing `test_cases.csv` for test file format.
 
 ```bash
+  cd tests
   python3 test.py `path_to_test_file`
 ```
 
