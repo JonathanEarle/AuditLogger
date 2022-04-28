@@ -40,10 +40,6 @@ class Authorizer:
     def type(self):
         return self._type
 
-    @property
-    def key(self):
-        return self._key
-
 
     @staticmethod
     def _hash_new_password(password):
