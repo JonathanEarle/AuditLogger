@@ -1,3 +1,6 @@
+
+"""Single class file which manages the authorization based functions of registration, token generation and client authorization"""
+
 import os
 import re
 import base64
@@ -8,21 +11,23 @@ from psycopg2 import DatabaseError
 from utils import connect,disconnect,DATABASE_ERROR
 
 
-
 class Authorizer:
+    #Regex to ensure valid email format
     EMAIL_VALIDATION = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
     
-    def __init__(self, type, key, db_config):
+
+    def __init__(self, type: str, key: str, db_config):
         self._type=type
         self._key=key
         self._db_config = db_config
 
+        #Initial unauthorized state
         self._user = None
         self._authorized = False
         self._message = "Unauthorized"
         self._code = 500
 
-        self._authorize()
+        self._authorize() #Authorization done on instantiation
 
     @property
     def authorized(self):
@@ -42,14 +47,16 @@ class Authorizer:
 
 
     @staticmethod
-    def _hash_new_password(password):
+    def _hash_new_password(password: str) -> tuple[str, str]:
         salt = os.urandom(32).hex()
         pw_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 310000).hex()
         return salt, pw_hash
 
+    #TODO: Have more refined permissions and user roles to define possible actions eg. Admin user can edit entities
 
+    """Validates registration data and registers a new user"""
     @staticmethod
-    def register(data,db_config):
+    def register(data, db_config):
         email = data.get('email')
         password = data.get('password')
 
@@ -71,7 +78,7 @@ class Authorizer:
             
             if new_user_id is None:
                 return "Email Already Registered",False,400
-            cur.execute('CALL initalize_account (%s)',(new_user_id,))
+            cur.execute('CALL initalize_account (%s)',(new_user_id,)) #Setup the intial state of the account
 
             conn.commit()
             disconnect(conn,cur)
@@ -84,10 +91,11 @@ class Authorizer:
         return "{0} Registered".format(email),True,201
 
     
-    def _is_correct_password(self, salt, pw_hash, password):
+    def _is_correct_password(self, salt: str, pw_hash: str, password: str) -> str:
         return pw_hash == hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 310000).hex()
 
 
+    """Routes to the right authorization check based on type instatiated with"""
     def _authorize(self):
         if self.type=='Bearer':
             self._bearer_auth()
@@ -95,11 +103,14 @@ class Authorizer:
         if self.type=='Basic': 
             self._basic_auth() 
 
+    #TODO: Add more token management eg. Revoking, lifespan, renewal
 
+    """Generates a new token for the currently authorized user"""
     def generate_token(self, data):
         name = data.get('name') or ''
         token = secrets.token_urlsafe()
 
+        #Random salt, used to hash the token, stored in an environment variable set on deployment
         salt = os.getenv('TOKEN_SALT')
         token_hash = hashlib.pbkdf2_hmac('sha256', token.encode(), salt.encode(), 310000).hex()
 
@@ -119,6 +130,7 @@ class Authorizer:
         return response,True,201
 
 
+    """Checks if the token is valid and sets the user it belong to"""
     def _bearer_auth(self):
         salt = os.getenv('TOKEN_SALT')
         token_hash = hashlib.pbkdf2_hmac('sha256', self._key.encode(), salt.encode(), 310000).hex()
@@ -145,6 +157,7 @@ class Authorizer:
         self._authorized = True
 
 
+    """Checks if the email password combination is valid and sets the user it belongs to"""
     def _basic_auth(self):
         email=sent_pw=None
 

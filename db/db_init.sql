@@ -112,7 +112,7 @@ ON events(entity_id);
 CREATE INDEX idx_event_creator
 ON events(creator);
 
-
+-- Sets up the initial event types for modifying the entity event model
 CREATE PROCEDURE initalize_account(user_id INT)
 AS $$
 DECLARE
@@ -148,6 +148,8 @@ END; $$
 LANGUAGE PLPGSQL;
 
 
+-- Checks to ensure the received entity type can perform the received event type
+-- If not results returned it cannot
 CREATE FUNCTION validate_event(entity_type_name TEXT, event_type_name TEXT, event_creator INT) 
     RETURNS TABLE(entity_id INT, event_id INT) AS
 $$
@@ -164,7 +166,8 @@ BEGIN
 END; $$
 LANGUAGE plpgsql;
 
-
+-- TODO: Store information on the current state of the event for future referencing
+-- Adds a new event to event store and creates a new entity if it was not created already
 CREATE PROCEDURE new_event(
     event_id INT,
     entity_id INT,
