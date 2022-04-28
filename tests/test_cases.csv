@@ -1,4 +1,4 @@
-name,method,target,data,authorization,response,capture,
+name,method,target,data,authorization,response,capture
 register user,post,registration,'{"email":"test11@test.com","password":"password"}',,'{"result": "test11@test.com Registered", "success": true, "code": 201}',
 register user with no pasword,post,registration,'{"email":"test11@test.com"}',,'{"result": "Both Email and Password required", "success": false, "code": 400}',
 register user with no email,post,registration,'{"password":"password"}',,'{"result": "Both Email and Password required", "success": false, "code": 400}',
