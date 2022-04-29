@@ -31,6 +31,7 @@ Make deployment script executable
 ```
 
 Run the deployment script. Set a password for the database when prompted, this is a postgres database used to store the service's data.
+NB. This script requires docker to be installed and the docker daemon running.
 
 ```bash
   ./deploy.sh
