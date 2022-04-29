@@ -3,9 +3,15 @@ Classes which manage the enforcement of the entity type event type structure
 Self auditing clsses which audit their own actions within the system
 """
 
+"""
+TODO: EventsTypes and EntityTypes have no deletion function to maintain the integrity of all existsing types.
+An inactive or decomissioned column can be applied instead
+"""
+
 from events import Event
 from psycopg2 import DatabaseError
 from utils import connect,disconnect,label_rows,update,DATABASE_ERROR
+
 
 """Manages the creation, modification and viewing of entity types"""
 class EntityType(Event):
@@ -87,6 +93,8 @@ class EntityType(Event):
                 cur.execute("SELECT id FROM event_types WHERE name = %s AND creator = %s", (event_name,self._user))
                 result =  cur.fetchone()
 
+                #TODO: Directly notify the user which events were invalid
+
                 #Ensure each event exists if not make a note of it
                 if result is None:
                     invalid_adds+=1
@@ -101,6 +109,8 @@ class EntityType(Event):
                 query = query[:-1]
                 query += " ON CONFLICT ON CONSTRAINT entity_events_pkey DO NOTHING"
                 cur.execute(query, tuple(query_params))
+
+            #TODO: Diirectly notify the user which events were not deleted
 
             #Generate query string for deletion
             query_params = [entity_id]
@@ -208,6 +218,7 @@ class EventType(Event):
         #Record that the creation of a new event type happened
         return self.add(update(event_details,{'notes':"Event Added",'success':True}))
 
+    #TODO: More details on the event specific attributes could be stored such as required tags and default value
 
     """Add and remove attributes from event types"""
     def edit_event_type_attributes(self, event_type_name, data): 
@@ -246,6 +257,8 @@ class EventType(Event):
         attributes = set(event_specs[0] or set())
         event_id = event_specs[1]
         
+        #TODO: Notify the user which attributes were not removed or how many were not
+
         #Add and remoove new attributes respectively
         for attr in to_add:
             attributes.add(attr)

@@ -13,6 +13,7 @@ from utils import config
 class AuditServerHandler(BaseHTTPRequestHandler):
     
     #TODO: Let dictionaries hold information on the type of authorization needed
+    #TODO: The variable regex pattern can be geenralized into a more digestible format eg. v1/events/{id}
 
     #Dictonaries mapping endpoint regex to a function to be executed at that endpoint
     #[^\/]+ substring maps to a particular target in the URI which is variable

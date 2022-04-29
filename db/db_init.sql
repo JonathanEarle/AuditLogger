@@ -60,6 +60,7 @@ CREATE TABLE entity_events (
 	  REFERENCES event_types(id)
 );
 
+-- Can be used in the future to hold the current state of an entity for reference/validation
 CREATE TABLE entity_instances (
     id SERIAL PRIMARY KEY,
     name TEXT,
@@ -86,7 +87,7 @@ CREATE TABLE events (
     entity_id INT,
     time TIMESTAMP DEFAULT NOW(),
     success BOOLEAN NOT NULL,
-    rb_id INT,
+    rb_id INT, --Unused field, intended to hold the id of an event to rollback to in the implementation of a rollback feature
     notes TEXT,
     data JSONB, --{attr_name:value} --CHANGE TO ATTRIBUTES
 
@@ -161,7 +162,7 @@ BEGIN
         INNER JOIN entity_types ON entity_events.entity_type = entity_types.id
         INNER JOIN event_types ON entity_events.event_type = event_types.id
         WHERE entity_types.name = entity_type_name AND event_types.name = event_type_name
-        AND event_types.creator = event_creator AND entity_types.creator = event_creator;
+        AND event_types.creator = event_creator AND entity_types.creator = event_creator; --May be an unecessarry checks
 
 END; $$
 LANGUAGE plpgsql;

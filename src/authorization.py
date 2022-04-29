@@ -10,6 +10,7 @@ import secrets
 from psycopg2 import DatabaseError
 from utils import connect,disconnect,DATABASE_ERROR
 
+#TODO: Apply IP based filtering for account and token creation to prevent spamming, also utilize request quotas on a user basis
 
 class Authorizer:
     #Regex to ensure valid email format
@@ -60,6 +61,8 @@ class Authorizer:
         email = data.get('email')
         password = data.get('password')
 
+        #TODO: Require strict rule set for passwords
+
         if email is None or email == '' or password is None or password == '':
             return "Both Email and Password required",False,400
 
@@ -103,7 +106,7 @@ class Authorizer:
         if self.type=='Basic': 
             self._basic_auth() 
 
-    #TODO: Add more token management eg. Revoking, lifespan, renewal
+    #TODO: Add more token management eg. Revoking, lifespan, renewal; Auditing of token generation should also be done
 
     """Generates a new token for the currently authorized user"""
     def generate_token(self, data):
