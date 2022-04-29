@@ -68,8 +68,11 @@ class Event():
         finally:
             if conn is not None: conn.close()
         
+        #TODO: A more descriptive message should be returned, including details of the attributes
+
         return ('{0} event occured on {1} instance {2}').format(attrs['event_type'],attrs['entity_type'],attrs['entity_name']),True,201
         
+    #TODO: For longterm viability and managing of the results, all views should be paginated and have the option to be ordered by an attribute
 
     """View all the event's details, can be filtered by a specific entity or by a list of attributes"""
     def view(self, filters, entity_name : str=None):
@@ -109,6 +112,8 @@ class Event():
         if entity_name is not None:
             query += " AND entity_instances.name = %s"
             event_attr_values.append(entity_name)
+
+        query += "ORDER BY time DESC"
 
         conn = None
         try:
